@@ -1,3 +1,6 @@
+-- Lazy K interpreter, original written by @fumieval
+-- http://ideone.com/Blsr4
+
 import Control.Arrow
 import Control.Applicative
 import Data.Char (chr, ord)
