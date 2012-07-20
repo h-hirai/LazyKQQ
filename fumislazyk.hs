@@ -61,9 +61,9 @@ output expr
     where
       x = realize $ apply expr K
 
-main = output . eval
-     =<< (fst . parse . concat . filter ((/='#').head) . filter (/=[]) *** encode . input >>> uncurry (:$))
-       <$> break (=="===STDIN===") . lines <$> getContents
-    where
-      input (_:xs) = unlines xs
-      input _ = ""
+main = do
+  prog <- readFile "program.lazyk"
+  input <- getContents
+  let p = fst $ parse $ concat $ filter ((/='#').head) $ filter (/=[]) $ lines prog
+      i = encode input
+  output $ eval (p :$ i)
