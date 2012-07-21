@@ -1,5 +1,12 @@
+{-# LANGUAGE TemplateHaskell,QuasiQuotes #-}
+
 -- Lazy K interpreter, original written by @fumieval
 -- http://ideone.com/Blsr4
+
+module LazyKQQ where
+
+import Language.Haskell.TH
+import Language.Haskell.TH.Quote
 
 import Control.Arrow
 import Control.Applicative
@@ -43,15 +50,15 @@ export x = error $ "invalid output format (result was not a number:" ++ show x
 realize :: Expr -> Int
 realize expr = export $ expr `apply` Inc `apply` Export 0
 
-parse :: String -> (Expr, String)
+parse :: String -> (ExpQ, String)
 parse ('`':xs) = let (a0, xs') = parse xs
                      (a1, xs'') = parse xs' in
-                 (a0 :$ a1, xs'')
-parse ('s':xs) = (S, xs)
-parse ('k':xs) = (K, xs)
-parse ('i':xs) = (I, xs)
+                 (infixE (Just a0) (conE '(:$)) (Just a1), xs'')
+parse ('s':xs) = ([|S|], xs)
+parse ('k':xs) = ([|K|], xs)
+parse ('i':xs) = ([|I|], xs)
 parse (_:xs) = parse xs
-parse "" = (I, "")
+parse "" = ([|I|], "")
 
 output :: Expr -> IO ()
 output expr
@@ -61,9 +68,9 @@ output expr
     where
       x = realize $ apply expr K
 
-main = do
-  prog <- readFile "program.lazyk"
-  input <- getContents
-  let p = fst $ parse $ concat $ filter ((/='#').head) $ filter (/=[]) $ lines prog
-      i = encode input
-  output $ eval (p :$ i)
+lazyK :: QuasiQuoter
+lazyK = QuasiQuoter { quoteExp = fst . parse
+                    , quotePat = undefined
+                    , quoteType = undefined
+                    , quoteDec = undefined
+                    }
