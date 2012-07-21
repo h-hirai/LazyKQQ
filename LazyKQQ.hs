@@ -8,11 +8,9 @@ module LazyKQQ where
 import Language.Haskell.TH
 import Language.Haskell.TH.Quote
 
-import Control.Arrow
 import Control.Applicative
 import Data.Char (chr, ord)
 import System.Exit
-import System.Environment
 import System.IO
 
 infixl 9 :$
