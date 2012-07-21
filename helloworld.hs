@@ -1,6 +1,7 @@
 {-# LANGUAGE TemplateHaskell,QuasiQuotes #-}
 
 import LazyKQQ
+import Control.Applicative ((<$>))
 
 program =
     [lazyK|
@@ -20,6 +21,4 @@ program =
      ki```s``siii``s``s`kski`k``s``si`k``s`k``s``s`kski``s``s`ksk```sii``s``
      s`kski`k``s``si`k```sii```sii``s``s`kski`k```sii```sii``s``s`kski
      |]
-main =
-    do input <- getContents
-       output $ eval $ program :$ (encode input)
+main = output . eval =<< (program :$) . encode <$> getContents
