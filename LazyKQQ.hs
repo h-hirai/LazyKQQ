@@ -1,7 +1,7 @@
 {-# LANGUAGE TemplateHaskell,QuasiQuotes #-}
 
 -- Lazy K interpreter, original written by @fumieval
--- http://ideone.com/Blsr4
+-- http://ideone.com/ST3kF
 
 module LazyKQQ where
 
